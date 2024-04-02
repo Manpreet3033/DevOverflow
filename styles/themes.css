@@ -3,7 +3,6 @@
 @tailwind utilities;
 
 @layer utilities {
-  /* Background classes */
   .background-light850_dark100 {
     @apply bg-light-850 dark:bg-dark-100;
   }
@@ -28,7 +27,18 @@
     @apply bg-light-700 dark:bg-dark-400;
   }
 
-  /* Text classes */
+  .background-light700_dark300 {
+    @apply bg-light-700 dark:bg-dark-300;
+  }
+
+  .background-light800_dark400 {
+    @apply bg-light-800 dark:bg-dark-400;
+  }
+
+  .background-light800_dark300 {
+    @apply bg-light-800 dark:bg-dark-300 !important;
+  }
+
   .text-dark100_light900 {
     @apply text-dark-100 dark:text-light-900 !important;
   }
@@ -81,7 +91,6 @@
     @apply text-light-400 dark:text-light-500 !important;
   }
 
-  /* Border classes */
   .light-border {
     @apply border-light-800 dark:border-dark-300;
   }
@@ -90,7 +99,6 @@
     @apply border-light-700 dark:border-dark-400 !important;
   }
 
-  /* Header classes */
   .h1-bold {
     @apply text-[30px] font-bold leading-[42px] tracking-tighter;
   }
@@ -111,7 +119,6 @@
     @apply text-[20px] font-semibold leading-[24.8px];
   }
 
-  /* Base classes */
   .base-medium {
     @apply text-[18px] font-medium leading-[25.2px];
   }
@@ -124,7 +131,6 @@
     @apply text-[18px] font-bold leading-[140%];
   }
 
-  /* Paragraph classes */
   .paragraph-regular {
     @apply text-[16px] font-normal leading-[22.4px];
   }
@@ -137,7 +143,6 @@
     @apply text-[16px] font-semibold leading-[20.8px];
   }
 
-  /* Body classes */
   .body-regular {
     @apply text-[14px] font-normal leading-[19.6px];
   }
@@ -150,7 +155,6 @@
     @apply text-[14px] font-semibold leading-[18.2px];
   }
 
-  /* Small classes */
   .small-regular {
     @apply text-[12px] font-normal leading-[15.6px];
   }
@@ -163,7 +167,6 @@
     @apply text-[12px] font-semibold leading-[15.6px];
   }
 
-  /* Subtle classes */
   .subtle-medium {
     @apply text-[10px] font-medium leading-[13px] !important;
   }
@@ -172,17 +175,14 @@
     @apply text-[10px] font-normal leading-[13px];
   }
 
-  /* Placeholder class */
   .placeholder {
-    @apply placeholder:text-light-400 dark:placeholder:text-light-;
+    @apply placeholder:text-light-400 dark:placeholder:text-light-500;
   }
 
-  /* Invert colors class */
   .invert-colors {
     @apply invert dark:invert-0;
   }
 
-  /* Shadow classes */
   .shadow-light100_dark100 {
     @apply shadow-light-100 dark:shadow-dark-100;
   }
@@ -191,7 +191,6 @@
     @apply shadow-light-100 dark:shadow-none;
   }
 
-  /* Gradient classes */
   .primary-gradient {
     background: linear-gradient(129deg, #ff7000 0%, #e2995f 100%);
   }
