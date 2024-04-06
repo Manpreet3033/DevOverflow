@@ -2,7 +2,7 @@ import { WebhookEvent } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
 import { Webhook } from "svix";
 export async function POST(req: Request) {
-  const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
+  const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET_KEY;
   if (!WEBHOOK_SECRET) {
     throw new Error("Please set the WEBHOOK_SECRET environment variable");
   }
