@@ -28,27 +28,27 @@ const hotQuestions = [
 
 const tags = [
   {
-    _id: 1,
+    _id: "1",
     name: "Javascript",
     totalQuestions: 5,
   },
   {
-    _id: 2,
+    _id: "2",
     name: "ReactJS",
     totalQuestions: 5,
   },
   {
-    _id: 3,
+    _id: "3",
     name: "NEXT",
     totalQuestions: 5,
   },
   {
-    _id: 4,
+    _id: "4",
     name: "REDUX",
     totalQuestions: 5,
   },
   {
-    _id: 5,
+    _id: "5",
     name: "VueJS",
     totalQuestions: 5,
   },
