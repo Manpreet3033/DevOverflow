@@ -83,9 +83,11 @@ const Question = ({ mongoUserId }: Props) => {
         content: values.explanation,
         tags: values.tags,
         author: JSON.parse(mongoUserId),
+        path: pathname,
       });
       router.push("/");
     } catch (err) {
+      console.log(err);
     } finally {
       setIsSubmitting(false);
     }
