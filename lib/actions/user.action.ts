@@ -43,13 +43,13 @@ export async function deleteUser(user: DeleteUserParams) {
   try {
     connectToDatabase();
 
-    const userToDelete = await User.findById(user.clerkId);
+    const userToDelete = await User.findOne({ clerkId: user.clerkId });
 
     if (!userToDelete) {
       throw new Error("User not found");
     }
 
-    const deletedUser = await User.findByIdAndDelete(user.clerkId);
+    const deletedUser = await User.findByIdAndDelete(userToDelete._id);
 
     revalidatePath("/");
 

@@ -55,9 +55,9 @@ const QuestionCard = ({
         <Metric
           imgUrl="/assets/icons/avatar.svg"
           alt="User"
-          value={author.name}
+          value={"Manpreet"}
           title={` - asked ${getTimestamp(createdAt)}`}
-          href={`/profile/${author._id}`}
+          href={`/profile/${"12345"}`}
           isAuthor
           textStyles="body-medium text-dark400_light700"
         />
