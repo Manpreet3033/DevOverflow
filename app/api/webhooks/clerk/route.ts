@@ -1,5 +1,8 @@
+import { createUser, deleteUser, updateUser } from "@/lib/actions/user.action";
+import { clerkClient } from "@clerk/nextjs";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
+import { NextResponse } from "next/server";
 import { Webhook } from "svix";
 export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET_KEY;
@@ -34,10 +37,69 @@ export async function POST(req: Request) {
       status: 400,
     });
   }
-  const { id } = evt.data;
+
   const type = evt.type;
 
-  console.log(id + type);
+  if (type === "user.created") {
+    const { data } = evt;
+    /* eslint-disable */
+    const { id, first_name, last_name, username, email_addresses, image_url } =
+      data;
+
+    const newUser = await createUser({
+      clerkId: id,
+      name: `${first_name} ${last_name}`,
+      username: username!,
+      email: email_addresses[0].email_address,
+      picture: image_url,
+    });
+
+    if (newUser) {
+      await clerkClient.users.updateUserMetadata(id, {
+        publicMetadata: {
+          userId: newUser._id,
+        },
+      });
+    }
+
+    return NextResponse.json({
+      message: "ok",
+      user: newUser,
+    });
+
+    /* eslint-enable */
+  }
+
+  if (type === "user.updated") {
+    /* eslint-disable */
+    const { id, image_url, first_name, last_name, username } = evt.data;
+
+    const updatedUser = await updateUser({
+      clerkId: id,
+      updateData: {
+        name: `${first_name} ${last_name}`,
+        username: username!,
+        picture: image_url,
+      },
+      path: `/profile${id}`,
+    });
+    return NextResponse.json({
+      message: "ok",
+      user: updatedUser,
+    });
+    /* eslint-enable */
+  }
+
+  if (type === "user.deleted") {
+    const { id } = evt.data;
+    const deletedUser = await deleteUser({
+      clerkId: id!,
+    });
+    return NextResponse.json({
+      message: "ok",
+      user: deletedUser,
+    });
+  }
 
   return new Response("", {
     status: 200,
