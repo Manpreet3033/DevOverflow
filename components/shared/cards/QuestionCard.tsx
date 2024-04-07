@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import RenderTag from "../tag/RenderTag";
-import { formatAndDivideNumber, getTimestamp } from "@/lib/utils";
+import { getFormattedNumber, getTimestamp } from "@/lib/utils";
 import Metric from "../metric/Metric";
 
 interface Props {
@@ -53,9 +53,9 @@ const QuestionCard = ({
 
       <div className="flex-between mt-6 w-full flex-wrap gap-3">
         <Metric
-          imgUrl="/assets/icons/avatar.svg"
+          imgUrl={author.picture}
           alt="User"
-          value={"Manpreet"}
+          value={author.name}
           title={` - asked ${getTimestamp(createdAt)}`}
           href={`/profile/${"12345"}`}
           isAuthor
@@ -64,21 +64,21 @@ const QuestionCard = ({
         <Metric
           imgUrl="/assets/icons/like.svg"
           alt="Upvotes"
-          value={formatAndDivideNumber(upvotes)}
+          value={getFormattedNumber(upvotes)}
           title=" Votes"
           textStyles="small-medium text-dark400_light800"
         />
         <Metric
           imgUrl="/assets/icons/message.svg"
           alt="message"
-          value={formatAndDivideNumber(answers.length)}
+          value={getFormattedNumber(answers.length)}
           title=" Answers"
           textStyles="small-medium text-dark400_light800"
         />
         <Metric
           imgUrl="/assets/icons/eye.svg"
           alt="eye"
-          value={formatAndDivideNumber(views)}
+          value={getFormattedNumber(views)}
           title=" Views"
           textStyles="small-medium text-dark400_light800"
         />

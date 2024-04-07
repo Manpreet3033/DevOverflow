@@ -1,7 +1,9 @@
 import NoResult from "@/components/shared/NoResults";
 import QuestionCard from "@/components/shared/cards/QuestionCard";
+import Filter from "@/components/shared/filters/Filter";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { Button } from "@/components/ui/button";
+import { HomePageFilters } from "@/constants/filters";
 import { getQuestions } from "@/lib/actions/question.action";
 import Link from "next/link";
 import React from "react";
@@ -22,7 +24,18 @@ const Home = async () => {
         </Link>
       </div>
       <div className="mt-11 flex items-center justify-between gap-5 max-sm:flex-col sm:items-center">
-        <LocalSearchBar />
+        <LocalSearchBar
+          route="/"
+          iconPosition="left"
+          imgSrc="/assets/icons/search.svg"
+          placeholder="Search for questions..."
+          otherClasses="flex w-full"
+        />
+        <Filter
+          filters={HomePageFilters}
+          otherClasses="min-h-[56px] sm:min-w-[170px]"
+          containerClasses="hidden max-md:flex max-md:w-full"
+        />
       </div>
       <div className="mt-10 flex w-full flex-col gap-6">
         {questions.length > 0 ? (

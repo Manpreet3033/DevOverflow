@@ -1,10 +1,12 @@
 "use server";
 
+import Question from "../database/models/question.model";
 import User from "../database/models/user.model";
 import { connectToDatabase } from "../mongoose";
 import {
   CreateUserParams,
   DeleteUserParams,
+  GetAllUsersParams,
   UpdateUserParams,
 } from "./shared.types";
 import { revalidatePath } from "next/cache";
@@ -39,23 +41,35 @@ export async function updateUser(user: UpdateUserParams) {
   }
 }
 
-export async function deleteUser(user: DeleteUserParams) {
+export async function deleteUser(params: DeleteUserParams) {
   try {
     connectToDatabase();
 
-    const userToDelete = await User.findOne({ clerkId: user.clerkId });
+    const { clerkId } = params;
 
-    if (!userToDelete) {
+    const user = await User.findOneAndDelete({ clerkId });
+
+    if (!user) {
       throw new Error("User not found");
     }
 
-    const deletedUser = await User.findByIdAndDelete(userToDelete._id);
+    // get user question ids
 
-    revalidatePath("/");
+    // const userQuestionIds = await Question.find({ author: user._id }).distinct(
+    //   "_id"
+    // );
 
-    return deletedUser ? JSON.parse(JSON.stringify(deletedUser)) : null;
+    // delete user questions
+    await Question.deleteMany({ author: user._id });
+
+    // TODO: Delete user answers, comments, etc
+
+    const deletedUser = await User.findByIdAndDelete(user._id);
+
+    return deletedUser;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 }
 
@@ -65,10 +79,23 @@ export async function getUserById(params: any) {
     const { userId } = params;
     const findUser = await User.findOne({
       clerkId: userId,
-    }).maxTimeMS(20000);
+    });
     return findUser;
   } catch (err) {
     console.log(err);
     throw err;
+  }
+}
+
+export async function getAllUsers(params: GetAllUsersParams) {
+  try {
+    connectToDatabase();
+    // const { page = 1, pageSize = 20, filter, searchQuery } = params;
+
+    const users = await User.find({}).sort({ createdAt: -1 });
+
+    return users;
+  } catch (err) {
+    console.log(err);
   }
 }

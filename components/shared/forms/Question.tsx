@@ -25,10 +25,10 @@ import { useRouter, usePathname } from "next/navigation";
 const type: any = "create";
 
 interface Props {
-  mongoUserId: string;
+  mongoUser: string;
 }
 
-const Question = ({ mongoUserId }: Props) => {
+const Question = ({ mongoUser }: Props) => {
   const editorRef = useRef(null);
   const router = useRouter();
   const pathname = usePathname();
@@ -82,7 +82,7 @@ const Question = ({ mongoUserId }: Props) => {
         title: values.title,
         content: values.explanation,
         tags: values.tags,
-        author: JSON.parse(mongoUserId),
+        author: JSON.parse(mongoUser),
         path: pathname,
       });
       router.push("/");
