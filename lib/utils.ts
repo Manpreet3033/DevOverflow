@@ -39,7 +39,7 @@ export const getTimestamp = (createdAt: Date): string => {
   for (const { unit, milliseconds } of timeUnits) {
     const time: number = Math.floor(timeDifference / milliseconds);
     if (time >= 1) {
-      return `${time} ${unit}${time === 1 ? "s" : ""} ago`;
+      return `${time} ${unit}${time === 1 ? "" : "s"} ago`;
     }
   }
 

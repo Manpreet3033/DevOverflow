@@ -22,7 +22,7 @@ const UserCard = async ({ user }: Prop) => {
       href={`/profile/${user.clerkId}`}
       className="shadow-light100_darknone w-full max-xs:min-w-full xs:w-[382px]"
     >
-      <article className=" background-light900_dark200 light-border flex w-full flex-col items-center justify-center rounded-2xl border p-8">
+      <section className=" background-light900_dark200 light-border flex w-full flex-col items-center justify-center rounded-2xl border p-8">
         <Image
           src={user.picture}
           alt="user profile picture"
@@ -49,7 +49,7 @@ const UserCard = async ({ user }: Prop) => {
             <Badge>No tags yet</Badge>
           )}
         </div>
-      </article>
+      </section>
     </Link>
   );
 };
