@@ -1,6 +1,7 @@
 import NoResult from "@/components/shared/NoResults";
 import QuestionCard from "@/components/shared/cards/QuestionCard";
 import Filter from "@/components/shared/filters/Filter";
+import HomeFilters from "@/components/shared/home/HomeFilters";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
@@ -37,6 +38,9 @@ const Home = async () => {
           containerClasses="hidden max-md:flex max-md:w-full"
         />
       </div>
+
+      <HomeFilters />
+
       <div className="mt-10 flex w-full flex-col gap-6">
         {questions.length > 0 ? (
           questions.map((question) => (

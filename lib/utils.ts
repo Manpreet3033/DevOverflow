@@ -43,7 +43,7 @@ export const getTimestamp = (createdAt: Date): string => {
     }
   }
 
-  return "Just now";
+  return "just now";
 };
 
 export const getFormattedNumber = (number: number): string => {

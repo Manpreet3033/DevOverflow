@@ -9,6 +9,7 @@ import {
   CreateQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
+  QuestionVoteParams,
 } from "./shared.types";
 
 export async function getQuestions(param: GetQuestionsParams) {
@@ -90,5 +91,101 @@ export async function getQuestionByID(params: GetQuestionByIdParams) {
     return questionDetails;
   } catch (err) {
     console.log(err);
+  }
+}
+
+export async function upVoteQuestion(params: QuestionVoteParams) {
+  try {
+    connectToDatabase();
+
+    const { questionId, userId, hasupVoted, hasdownVoted, path } = params;
+
+    let updateQuery = {};
+
+    if (hasupVoted) {
+      updateQuery = {
+        $pull: {
+          upvotes: userId,
+        },
+      };
+    } else if (hasdownVoted) {
+      updateQuery = {
+        $pull: {
+          downvotes: userId,
+        },
+        $push: {
+          upvotes: userId,
+        },
+      };
+    } else {
+      updateQuery = {
+        $addToSet: {
+          upvotes: userId,
+        },
+      };
+    }
+
+    const question = await Question.findByIdAndUpdate(questionId, updateQuery, {
+      new: true,
+    });
+
+    if (!question) {
+      throw new Error("Question not found");
+    }
+
+    // Increment author reputation by +10
+
+    revalidatePath(path);
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function downVoteQuestion(params: QuestionVoteParams) {
+  try {
+    connectToDatabase();
+
+    const { questionId, userId, hasupVoted, hasdownVoted, path } = params;
+
+    let updateQuery = {};
+
+    if (hasdownVoted) {
+      updateQuery = {
+        $pull: {
+          downvotes: userId,
+        },
+      };
+    } else if (hasupVoted) {
+      updateQuery = {
+        $pull: {
+          upvotes: userId,
+        },
+        $push: {
+          downvotes: userId,
+        },
+      };
+    } else {
+      updateQuery = {
+        $addToSet: {
+          downvotes: userId,
+        },
+      };
+    }
+
+    const question = await Question.findByIdAndUpdate(questionId, updateQuery, {
+      new: true,
+    });
+
+    if (!question) {
+      throw new Error("Question not found");
+    }
+
+    // Increment author reputation by +10
+
+    revalidatePath(path);
+  } catch (err) {
+    console.log(err);
+    throw err;
   }
 }
