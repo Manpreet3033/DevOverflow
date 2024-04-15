@@ -8,11 +8,14 @@ import {
   DeleteUserParams,
   GetAllUsersParams,
   GetSavedQuestionsParams,
+  GetUserByIdParams,
+  GetUserStatsParams,
   ToggleSaveQuestionParams,
   UpdateUserParams,
 } from "./shared.types";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
+import Answer from "../database/models/answer.model";
 
 export async function createUser(user: CreateUserParams) {
   try {
@@ -26,21 +29,17 @@ export async function createUser(user: CreateUserParams) {
   }
 }
 
-export async function updateUser(user: UpdateUserParams) {
+export async function updateUser(params: UpdateUserParams) {
   try {
     connectToDatabase();
+    const { clerkId, updateData, path } = params;
 
-    const updatedUser = await User.findByIdAndUpdate(
-      user.clerkId,
-      user.updateData,
-      { new: true }
-    );
+    await User.findOneAndUpdate({ clerkId }, updateData, { new: true });
 
-    revalidatePath(user.path);
-
-    return JSON.parse(JSON.stringify(updatedUser));
-  } catch (error) {
-    console.log(error);
+    revalidatePath(path);
+  } catch (err) {
+    console.log(err);
+    throw err;
   }
 }
 
@@ -166,6 +165,11 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
         { path: "author", model: User, select: "_id clerkId picture name" },
       ],
     });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
     const saved = user.saved;
 
     return { saved };
@@ -174,3 +178,71 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
     throw err;
   }
 }
+
+export async function getUserInfo(params: GetUserByIdParams) {
+  try {
+    connectToDatabase();
+    const { userId } = params;
+    const user = await User.findOne({ clerkId: userId });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const totalQuestions = await Question.countDocuments({ author: user._id });
+
+    const totalAnswers = await Answer.countDocuments({ author: user._id });
+
+    return { user, totalQuestions, totalAnswers };
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+export async function getUserQuestions(params: GetUserStatsParams) {
+  try {
+    connectToDatabase();
+    const { userId, page = 1, pageSize = 10 } = params;
+
+    const totalQuestions = await Question.countDocuments({ author: userId });
+
+    const userQuestions = await Question.find({ author: userId })
+      .sort({ views: -1, upvotes: -1 })
+      .populate("tags", "_id name")
+      .populate("author", "_id name clerkId picture");
+
+    return { totalQuestions, userQuestions };
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function getUserAnswers(params: GetUserStatsParams) {
+  try {
+    connectToDatabase();
+    const { userId, page = 1, pageSize = 10 } = params;
+
+    const totalAnswers = await Answer.countDocuments({ author: userId });
+
+    const userAnswers = await Answer.find({ author: userId })
+      .sort({ upvotes: -1 })
+      .populate("question", "_id title")
+      .populate("author", "_id name clerkId picture");
+
+    return { totalAnswers, userAnswers };
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+// export async function getUserQuestions(params: GetUserStatsParams) {
+//   try {
+//     connectToDatabase();
+
+//   } catch (err) {
+//     console.log(err);
+//     throw err;
+//   }
+// }
