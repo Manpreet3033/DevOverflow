@@ -23,13 +23,12 @@ const LocalSearch = ({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
   const query = searchParams.get("q");
 
   const [search, setSearch] = useState(query || "");
 
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
+    const delayDebounceFunction = setTimeout(() => {
       if (search) {
         const newUrl = formUrlQuery({
           params: searchParams.toString(),
@@ -46,10 +45,9 @@ const LocalSearch = ({
           router.push(newUrl, { scroll: false });
         }
       }
-    }, 300);
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [search, route, pathname, searchParams, query, router]);
+    }, 500);
+    return () => clearTimeout(delayDebounceFunction);
+  }, [search, route, pathname, router, searchParams, query]);
 
   return (
     <div

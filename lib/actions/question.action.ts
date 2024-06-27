@@ -15,11 +15,22 @@ import {
 } from "./shared.types";
 import Answer from "../database/models/answer.model";
 import Interaction from "../database/models/interaction.model";
+import { FilterQuery } from "mongoose";
 
 export async function getQuestions(param: GetQuestionsParams) {
   try {
     connectToDatabase();
-    const questions = await Question.find({})
+    const { searchQuery } = param;
+    const query: FilterQuery<typeof Question> = {};
+    if (searchQuery) {
+      query.$or = [
+        {
+          title: { $regex: new RegExp(searchQuery, "i") },
+          content: { $regex: new RegExp(searchQuery, "i") },
+        },
+      ];
+    }
+    const questions = await Question.find(query)
       .populate({
         path: "tags",
         model: Tag,
@@ -228,6 +239,22 @@ export async function editQuestion(params: EditQuestionParams) {
 
     await foundQuestion.save();
     revalidatePath(path);
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function getHotQuestions() {
+  try {
+    connectToDatabase();
+    const hotQuestions = await Question.find({})
+      .sort({
+        views: -1,
+        upvotes: -1,
+      })
+      .limit(5);
+    return hotQuestions;
   } catch (err) {
     console.log(err);
     throw err;
