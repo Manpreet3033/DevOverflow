@@ -15,8 +15,8 @@ import React from "react";
 interface Params {
   id: string;
 }
-
-const page = async ({ params }: { params: Params }) => {
+// @ts-ignore
+const page = async ({ params, searchParams }: { params: Params }) => {
   const { userId: clerkId } = auth();
 
   let mongoUser;
@@ -101,6 +101,8 @@ const page = async ({ params }: { params: Params }) => {
         questionId={result._id}
         userId={mongoUser._id}
         totalAnswers={result.answers.length}
+        page={searchParams?.page}
+        filter={searchParams?.filter}
       />
       <Answer
         question={result.content}

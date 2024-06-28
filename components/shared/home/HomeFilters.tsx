@@ -9,8 +9,6 @@ const HomeFilters = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  console.log(searchParams);
-
   const [active, setActive] = useState("");
 
   const handleTypeClick = (item: string) => {
@@ -19,7 +17,7 @@ const HomeFilters = () => {
       const newUrl = formUrlQuery({
         params: searchParams.toString(),
         key: "filter",
-        value: null, // reset
+        value: null,
       });
       router.push(newUrl, { scroll: false });
     } else {
