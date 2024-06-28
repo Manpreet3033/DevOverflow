@@ -34,7 +34,6 @@ export async function getAllTags(params: GetAllTagsParams) {
     connectToDatabase();
     const { searchQuery } = params;
     const query: FilterQuery<typeof Tag> = {};
-
     if (searchQuery) {
       query.$or = [{ name: { $regex: searchQuery, $options: "i" } }];
     }
@@ -66,13 +65,10 @@ export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
         { path: "author", model: User, select: "_id clerkId picture name" },
       ],
     });
-
     if (!tag) {
       throw new Error("Tag not found");
     }
-
     const questions = tag.questions;
-
     return { tagTitle: tag.name, questions };
   } catch (err) {
     console.log(err);

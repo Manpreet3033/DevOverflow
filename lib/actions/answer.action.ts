@@ -33,11 +33,9 @@ export async function getAnswers(params: GetAnswersParams) {
   try {
     connectToDatabase();
     const { questionId } = params;
-
     const answers = await Answer.find({ question: questionId })
       .populate("author", "_id clerkId name picture")
       .sort({ createdAt: -1 });
-
     return { answers };
   } catch (err) {
     console.log(err);
@@ -48,11 +46,8 @@ export async function getAnswers(params: GetAnswersParams) {
 export async function upVoteAnswer(params: AnswerVoteParams) {
   try {
     connectToDatabase();
-
     const { answerId, userId, hasupVoted, hasdownVoted, path } = params;
-
     let updateQuery = {};
-
     if (hasupVoted) {
       updateQuery = {
         $pull: {
@@ -75,17 +70,13 @@ export async function upVoteAnswer(params: AnswerVoteParams) {
         },
       };
     }
-
     const answer = await Answer.findByIdAndUpdate(answerId, updateQuery, {
       new: true,
     });
-
     if (!answer) {
       throw new Error("Question not found");
     }
-
     // Increment author reputation by +10
-
     revalidatePath(path);
   } catch (err) {
     console.log(err);
@@ -96,11 +87,8 @@ export async function upVoteAnswer(params: AnswerVoteParams) {
 export async function downVoteAnswer(params: AnswerVoteParams) {
   try {
     connectToDatabase();
-
     const { answerId, userId, hasupVoted, hasdownVoted, path } = params;
-
     let updateQuery = {};
-
     if (hasdownVoted) {
       updateQuery = {
         $pull: {
@@ -123,17 +111,13 @@ export async function downVoteAnswer(params: AnswerVoteParams) {
         },
       };
     }
-
     const answer = await Answer.findByIdAndUpdate(answerId, updateQuery, {
       new: true,
     });
-
     if (!answer) {
       throw new Error("Question not found");
     }
-
     // Increment author reputation by +10
-
     revalidatePath(path);
   } catch (err) {
     console.log(err);
