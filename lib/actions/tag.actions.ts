@@ -38,9 +38,7 @@ export async function getAllTags(params: GetAllTagsParams) {
     if (searchQuery) {
       query.$or = [{ name: { $regex: searchQuery, $options: "i" } }];
     }
-
     const tags = await Tag.find(query).sort({ createdAt: -1 });
-
     return { tags };
   } catch (err) {
     console.log(err);

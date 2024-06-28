@@ -93,13 +93,14 @@ export async function getAllUsers(params: GetAllUsersParams) {
   try {
     connectToDatabase();
     const { searchQuery } = params;
-
     const query: FilterQuery<typeof User> = {};
 
     if (searchQuery) {
       query.$or = [
         {
           username: { $regex: new RegExp(searchQuery, "i") },
+        },
+        {
           name: { $regex: new RegExp(searchQuery, "i") },
         },
       ];
@@ -117,15 +118,11 @@ export async function saveQuestions(params: ToggleSaveQuestionParams) {
   try {
     connectToDatabase();
     const { userId, questionId, path } = params;
-
     const user = await User.findById(userId);
-
     if (!user) {
       throw new Error("User not found");
     }
-
     const isQuestionSaved = user.saved.includes(questionId);
-
     if (isQuestionSaved) {
       await User.findByIdAndUpdate(
         userId,
@@ -149,7 +146,6 @@ export async function saveQuestions(params: ToggleSaveQuestionParams) {
         }
       );
     }
-
     revalidatePath(path);
   } catch (err) {
     console.log(err);
@@ -158,13 +154,11 @@ export async function saveQuestions(params: ToggleSaveQuestionParams) {
 
 export async function getSavedQuestions(params: GetSavedQuestionsParams) {
   try {
-    const { clerkId, searchQuery } = params;
     connectToDatabase();
-
+    const { clerkId, searchQuery } = params;
     const query: FilterQuery<typeof Question> = searchQuery
       ? { title: { $regex: new RegExp(searchQuery, "i") } }
       : {};
-
     const user = await User.findOne({ clerkId }).populate({
       path: "saved",
       match: query,
@@ -176,13 +170,7 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
         { path: "author", model: User, select: "_id clerkId picture name" },
       ],
     });
-
-    if (!user) {
-      throw new Error("User not found");
-    }
-
     const saved = user.saved;
-
     return { saved };
   } catch (err) {
     console.error(err);
@@ -195,15 +183,11 @@ export async function getUserInfo(params: GetUserByIdParams) {
     connectToDatabase();
     const { userId } = params;
     const user = await User.findOne({ clerkId: userId });
-
     if (!user) {
       throw new Error("User not found");
     }
-
     const totalQuestions = await Question.countDocuments({ author: user._id });
-
     const totalAnswers = await Answer.countDocuments({ author: user._id });
-
     return { user, totalQuestions, totalAnswers };
   } catch (err) {
     console.log(err);
@@ -221,7 +205,6 @@ export async function getUserQuestions(params: GetUserStatsParams) {
       .sort({ views: -1, upvotes: -1 })
       .populate("tags", "_id name")
       .populate("author", "_id name clerkId picture");
-
     return { totalQuestions, userQuestions };
   } catch (err) {
     console.log(err);
